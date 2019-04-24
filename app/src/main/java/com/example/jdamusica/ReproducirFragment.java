@@ -26,7 +26,8 @@ public class ReproducirFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String cancionNombre;
+    private String artistaNombre;
     private Cancion cancion;
 
     TextView nombreArtista, nombreCancion;
@@ -44,10 +45,11 @@ public class ReproducirFragment extends Fragment {
      * @return A new instance of fragment ReproducirFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ReproducirFragment newInstance(Cancion cancion) {
+    public static ReproducirFragment newInstance(String nombreCancion, String nombreArtista) {
         ReproducirFragment fragment = new ReproducirFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("Cancion", (Parcelable) cancion);
+        bundle.putString("Cancion", nombreCancion);
+        bundle.putString("Artista", nombreArtista);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -56,7 +58,8 @@ public class ReproducirFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            cancionNombre = getArguments().getString("Cancion", "No hay nombre de cancion");
+            artistaNombre = getArguments().getString("Artista", "No hay nombre de artista");
         }
     }
 
@@ -70,10 +73,10 @@ public class ReproducirFragment extends Fragment {
         nombreArtista = view.findViewById(R.id.nombreCancionReproducir);
         cancion = (Cancion) getArguments().getParcelable("Cancion");
 
-        Log.i("Cancion", cancion.getNombreCancion() + '-' + cancion.getNombreArtista());
+        Log.i("Cancion", cancionNombre + '-' + artistaNombre);
 
-        nombreArtista.setText(cancion.getNombreArtista());
-        nombreCancion.setText(cancion.getNombreCancion());
+        nombreArtista.setText(artistaNombre);
+        nombreCancion.setText(cancionNombre);
         // Inflate the layout for this fragment
         return view;
     }

@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity implements CancionesFragment
 
     @Override
     public void pasarCancion(Cancion cancion) {
-        ReproducirFragment fragment = ReproducirFragment.newInstance(cancion);
+        ReproducirFragment fragment = ReproducirFragment.newInstance(cancion.getNombreCancion(), cancion.getNombreArtista());
         cargar_fragment(fragment);
 
     }
