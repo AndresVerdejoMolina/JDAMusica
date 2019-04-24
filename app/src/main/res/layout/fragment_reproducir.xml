@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReproducirFragment">
+
+    <ImageView
+        android:id="@+id/fotoCancionReproducir"
+        android:layout_width="282dp"
+        android:layout_height="284dp"
+        android:layout_above="@+id/nombreCancion"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="51dp"
+        android:layout_marginBottom="114dp"
+        tools:layout_editor_absoluteX="124dp"
+        tools:layout_editor_absoluteY="64dp" />
+
+    <TextView
+        android:id="@+id/nombreCancionReproducir"
+        android:layout_width="127dp"
+        android:layout_height="52dp"
+        android:layout_above="@+id/nombreArtistaReproducir"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="125dp"
+        android:layout_marginBottom="56dp"
+        android:gravity="center"
+        android:text="Nombre"
+        android:textAppearance="?attr/textAppearanceListItem"
+        tools:layout_editor_absoluteX="142dp"
+        tools:layout_editor_absoluteY="251dp"
+        tools:text="Cancion" />
+
+    <TextView
+        android:id="@+id/nombreArtistaReproducir"
+        android:layout_width="115dp"
+        android:layout_height="26dp"
+        android:background="#c6cbd3"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="134dp"
+        android:layout_marginBottom="161dp"
+        android:text="Artista"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="352dp"
+        android:gravity="center"/>
+
+    <ImageButton
+        android:id="@+id/pausarMusica"
+        android:layout_width="58dp"
+        android:layout_height="42dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="85dp"
+        android:layout_marginBottom="40dp"
+        android:layout_toStartOf="@+id/playMusic"
+        android:background="#888e99"
+        android:src="@drawable/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/playMusic"
+        android:layout_width="58dp"
+        android:layout_height="42dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="90dp"
+        android:layout_marginBottom="40dp"
+        android:background="#888e99"
+        android:src="@drawable/play" />
+
+</RelativeLayout>
