@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -26,10 +27,11 @@ public class ReproducirFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String mParam1, mParam2;
     private Cancion cancion;
 
     TextView nombreArtista, nombreCancion;
+    ImageView foto;
 
     private OnFragmentInteractionListener mListener;
 
@@ -47,7 +49,8 @@ public class ReproducirFragment extends Fragment {
     public static ReproducirFragment newInstance(Cancion cancion) {
         ReproducirFragment fragment = new ReproducirFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("Cancion", (Parcelable) cancion);
+        bundle.putString("nombreCancion", cancion.getNombreCancion());
+        bundle.putString("nombreArtista", cancion.getNombreArtista());
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -56,7 +59,8 @@ public class ReproducirFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam1 = getArguments().getString("nombreCancion", "No hay nombre de cancion.");
+            mParam2 = getArguments().getString("nombreArtista", "No hay nombre del artusta.");
         }
     }
 
@@ -67,13 +71,11 @@ public class ReproducirFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_reproducir, container, false);
 
         nombreCancion = view.findViewById(R.id.nombreCancionReproducir);
-        nombreArtista = view.findViewById(R.id.nombreCancionReproducir);
-        cancion = (Cancion) getArguments().getParcelable("Cancion");
+        nombreArtista = view.findViewById(R.id.nombreArtistaReproducir);
+        foto = view.findViewById(R.id.fotoCancionReproducir);
 
-        Log.i("Cancion", cancion.getNombreCancion() + '-' + cancion.getNombreArtista());
-
-        nombreArtista.setText(cancion.getNombreArtista());
-        nombreCancion.setText(cancion.getNombreCancion());
+        nombreArtista.setText(mParam2);
+        nombreCancion.setText(mParam1);
         // Inflate the layout for this fragment
         return view;
     }
