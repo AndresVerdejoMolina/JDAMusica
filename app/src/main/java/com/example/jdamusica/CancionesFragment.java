@@ -15,6 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +32,7 @@ public class CancionesFragment extends Fragment {
     private AdaptadorCanciones mCancionesAdapter;
 
     private ReproducirListener mListener;
+    public ArrayList<Cancion> canciones;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -48,8 +51,7 @@ public class CancionesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
+        canciones = new ArrayList<Cancion>();
     }
 
     @Override
@@ -60,7 +62,7 @@ public class CancionesFragment extends Fragment {
 
         mCancionesList = (ListView) view.findViewById(R.id.canciones_list);
 
-        mCancionesAdapter = new AdaptadorCanciones(getActivity(), RepositorioCanciones.getInstance().getCanciones());
+        mCancionesAdapter = new AdaptadorCanciones(getActivity(), canciones);
 
         mCancionesList.setAdapter(mCancionesAdapter);
 
@@ -79,21 +81,6 @@ public class CancionesFragment extends Fragment {
         });
 
         return view;
-    }
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_canciones_list, menu);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_refesh) {
-            Toast.makeText(getActivity(),
-                    "Refrescar",
-                    Toast.LENGTH_LONG).show();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -117,5 +104,10 @@ public class CancionesFragment extends Fragment {
     public interface ReproducirListener {
         // TODO: Update argument type and name
         void pasarCancion(Cancion cancion);
+    }
+
+    public void addCancion(Cancion cancion){
+        canciones.add(cancion);
+        mCancionesAdapter.notifyDataSetChanged();
     }
 }

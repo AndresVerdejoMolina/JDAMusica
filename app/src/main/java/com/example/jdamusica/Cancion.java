@@ -3,16 +3,41 @@ package com.example.jdamusica;
 import java.util.UUID;
 
 public class Cancion {
-    private String mId;
     private String nombreCancion;
     private String nombreArtista;
-    private int mImage;
+    private String foto;
 
-    public Cancion(String nombreCancion, String nombreArtista, int mImage) {
-        mId = UUID.randomUUID().toString();
+    public void setNombreCancion(String nombreCancion) {
+        this.nombreCancion = nombreCancion;
+    }
+
+    public void setNombreArtista(String nombreArtista) {
+        this.nombreArtista = nombreArtista;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
+    public String getUrlCancion() {
+        return urlCancion;
+    }
+
+    public void setUrlCancion(String urlCancion) {
+        this.urlCancion = urlCancion;
+    }
+
+    private String urlCancion;
+
+    public Cancion(String nombreCancion, String nombreArtista, String foto, String urlCancion) {
         this.nombreCancion = nombreCancion;
         this.nombreArtista = nombreArtista;
-        this.mImage = mImage;
+        this.foto = foto;
+        this.urlCancion=urlCancion;
     }
 
     public String getNombreCancion() {
@@ -23,21 +48,10 @@ public class Cancion {
         return nombreArtista;
     }
 
-    public int getmImage() {
-        return mImage;
+    public String getmImage() {
+        return foto;
     }
+    public Cancion(){}
 
-    public String getId() {
-        return mId;
-    }
-
-    @Override
-    public String toString() {
-        return "Cancion{" +
-                "ID='" + mId + '\'' +
-                ", Nombre de cancion='" + nombreCancion + '\'' +
-                ", Nombre del artista='" + nombreArtista + '\'' +
-                '}';
-    }
 
 }
