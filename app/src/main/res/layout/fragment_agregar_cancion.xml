@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AgregarCancion"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="307dp"
+        android:layout_toStartOf="@+id/nombreCancionAdd"
+        android:text="Nombre de la cancion"
+        android:textStyle="bold"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="257dp" />
+
+    <EditText
+        android:id="@+id/nombreCancionAdd"
+        android:layout_width="201dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="298dp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="193dp"
+        tools:layout_editor_absoluteY="253dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="397dp"
+        android:layout_toStartOf="@+id/nombreArtistaAdd"
+        android:text="Nombre del artista"
+        android:textStyle="bold"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="35dp"
+        tools:layout_editor_absoluteY="198dp" />
+
+    <EditText
+        android:id="@+id/nombreArtistaAdd"
+        android:layout_width="214dp"
+        android:layout_height="66dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="383dp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="193dp"
+        tools:layout_editor_absoluteY="175dp" />
+
+    <TextView
+        android:id="@+id/addPhotoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="130dp"
+        android:text="Archivo foto"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="235dp"
+        tools:layout_editor_absoluteY="542dp" />
+
+    <ImageButton
+        android:id="@+id/addPhoto"
+        android:layout_width="60dp"
+        android:layout_height="53dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="-343dp"
+        android:layout_marginBottom="65dp"
+        android:layout_toStartOf="@+id/addMusic"
+        android:src="@drawable/photo"
+        tools:ignore="InvalidId,MissingConstraints"
+        tools:layout_editor_absoluteX="269dp"
+        tools:layout_editor_absoluteY="593dp" />
+
+    <TextView
+        android:id="@+id/addMusicText"
+        android:layout_width="185dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="200dp"
+        android:layout_marginBottom="126dp"
+        android:text="Archivo audio"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="542dp" />
+
+    <ImageButton
+        android:id="@+id/addMusic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="308dp"
+        android:layout_marginBottom="72dp"
+        android:src="@drawable/music"
+        tools:ignore="InvalidId,MissingConstraints"
+        tools:layout_editor_absoluteX="63dp"
+        tools:layout_editor_absoluteY="593dp" />
+
+    <Button
+        android:id="@+id/subirFoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="119dp"
+        android:layout_marginBottom="22dp"
+        android:text="Subir archivo" />
+
+</RelativeLayout>

@@ -1,4 +1,6 @@
 package com.example.jdamusica;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -6,43 +8,47 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.ActionMenuItem;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity implements CancionesFragment.ReproducirListener, ReproducirFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements CancionesFragment.ReproducirListener, ReproducirFragment.OnFragmentInteractionListener, AgregarCancion.NuevaCancion {
     private DatabaseReference mDatabase;
     public ChildEventListener childEvent;
-
+    private StorageReference mStorage;
+    private FirebaseStorage mFirebase = FirebaseStorage.getInstance();
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    public static String urlDescargaFoto= "";
+    public static String urlDescargaCancion= "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_canciones);
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
+
+        mStorage = FirebaseStorage.getInstance().getReference();
         childEvent = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -125,14 +131,20 @@ public class MainActivity extends AppCompatActivity implements CancionesFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         ActionMenuItemView refresh = findViewById(R.id.action_refesh);
-        Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);
+        AgregarCancion fragment = AgregarCancion.newInstance();
         int id = item.getItemId();
-        if (id == R.id.action_refesh) {
-            Toast.makeText(this,
-                    "Refrescando lista",
-                    Toast.LENGTH_LONG).show();
-            refresh.startAnimation(animation);
-            cargarLista();
+        switch (id) {
+            case R.id.action_refesh:
+                Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);
+                Toast.makeText(this,
+                        "Refrescando lista",
+                        Toast.LENGTH_SHORT).show();
+                refresh.startAnimation(animation);
+                cargarLista();
+                break;
+            case R.id.action_addSong:
+                new GuiaAñadirCancionDialog().show(getSupportFragmentManager(), "GuiaAñadirCancionDialog");
+                cargar_fragment(fragment, "AgregarCancion");
 
         }
         return super.onOptionsItemSelected(item);
@@ -141,5 +153,110 @@ public class MainActivity extends AppCompatActivity implements CancionesFragment
     @Override
     public void onBackPressed() {
         cargarLista();
+    }
+
+
+    @Override
+    public void agregarNuevaCancion(final String nombreCancion, final String nombreArtista, final Uri uri) {
+        final UUID uuid = UUID.randomUUID();
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+
+        if(MainActivity.this.getContentResolver().getType(uri).startsWith("image/")) {
+
+            progressDialog.setTitle("Subiendo foto...");
+            progressDialog.show();
+
+            final StorageReference ref = mFirebase.getReference().child("imagenes/" + nombreArtista + "-" + nombreCancion + "(" + uuid + ")");
+
+            UploadTask uploadTask;
+            uploadTask = ref.putFile(uri);
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+                    return ref.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        progressDialog.dismiss();
+                        Toast.makeText(MainActivity.this,
+                                "Se ha subido la foto en el FireBaseStorage, con el nombre: " + nombreArtista + "-" + nombreCancion + "(" + uuid + ")",
+                                Toast.LENGTH_LONG).show();
+                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                urlDescargaFoto = String.valueOf(uri);
+                            }
+                        });
+
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
+                }
+            });
+
+        }else{
+
+            progressDialog.setTitle("Subiendo audio...");
+            progressDialog.show();
+
+            final StorageReference ref = mFirebase.getReference().child("audios/" + nombreArtista + "-" + nombreCancion + "(" + uuid + ")");
+
+            UploadTask uploadTask;
+            uploadTask = ref.putFile(uri);
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+                    return ref.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        progressDialog.dismiss();
+                        Toast.makeText(MainActivity.this,
+                                "Se ha subido el audio en el FireBaseStorage, con el nombre: " + nombreArtista + "-" + nombreCancion + "(" + uuid + ")",
+                                Toast.LENGTH_LONG).show();
+                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                urlDescargaCancion = String.valueOf(uri);
+                            }
+                        });
+
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
+                }
+            });
+            Log.i("NuevaCancion", nombreArtista + "-" + nombreCancion + "cancion: " + urlDescargaCancion + "foto: " + urlDescargaFoto);
+            if(!urlDescargaCancion.isEmpty() && !urlDescargaFoto.isEmpty()) {
+                mDatabase.child("canciones").push().setValue(new Cancion(nombreCancion, nombreArtista, urlDescargaFoto, urlDescargaCancion));
+                Toast.makeText(MainActivity.this,
+                        "Nueva canción, " + nombreArtista + " de " + nombreCancion,
+                        Toast.LENGTH_LONG).show();
+
+
+                urlDescargaFoto = "";
+                urlDescargaCancion="";
+            }
+        }
+
+
     }
 }

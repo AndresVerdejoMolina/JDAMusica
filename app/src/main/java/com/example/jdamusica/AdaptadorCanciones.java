@@ -46,7 +46,7 @@ public class AdaptadorCanciones extends ArrayAdapter<Cancion> {
         // Setup.
         holder.nombreCancion.setText(lead.getNombreCancion());
         holder.nombreArtista.setText(lead.getNombreArtista());
-        Glide.with(getContext()).load(lead.getmImage()).into(holder.fotoCancion);
+        Glide.with(getContext()).load(lead.getFoto()).into(holder.fotoCancion);
 
         return convertView;
     }

@@ -90,7 +90,7 @@ public class CancionesFragment extends Fragment {
             mListener = (ReproducirListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement NuevaCancion");
         }
     }
 

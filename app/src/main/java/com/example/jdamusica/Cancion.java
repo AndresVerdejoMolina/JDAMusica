@@ -6,6 +6,16 @@ public class Cancion {
     private String nombreCancion;
     private String nombreArtista;
     private String foto;
+    private String urlCancion;
+
+    public Cancion(){}
+
+    public Cancion(String nombreCancion, String nombreArtista, String foto, String urlCancion) {
+        this.nombreCancion = nombreCancion;
+        this.nombreArtista = nombreArtista;
+        this.foto = foto;
+        this.urlCancion=urlCancion;
+    }
 
     public void setNombreCancion(String nombreCancion) {
         this.nombreCancion = nombreCancion;
@@ -31,15 +41,6 @@ public class Cancion {
         this.urlCancion = urlCancion;
     }
 
-    private String urlCancion;
-
-    public Cancion(String nombreCancion, String nombreArtista, String foto, String urlCancion) {
-        this.nombreCancion = nombreCancion;
-        this.nombreArtista = nombreArtista;
-        this.foto = foto;
-        this.urlCancion=urlCancion;
-    }
-
     public String getNombreCancion() {
         return nombreCancion;
     }
@@ -47,11 +48,5 @@ public class Cancion {
     public String getNombreArtista() {
         return nombreArtista;
     }
-
-    public String getmImage() {
-        return foto;
-    }
-    public Cancion(){}
-
 
 }
