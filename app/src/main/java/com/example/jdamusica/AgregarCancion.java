@@ -37,7 +37,7 @@ public class AgregarCancion extends Fragment {
     TextView addPhotoText, addMusicText;
     ImageButton addMusica, addPhoto;
 
-    private Uri uri;
+    private Uri uriAudio, uriFoto;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -104,13 +104,13 @@ public class AgregarCancion extends Fragment {
     }
 
     private void subirFotoStorage(final String nombreArtista, final String nombreCancion) {
-        if(uri == null) {
+        if(uriAudio == null || uriFoto == null) {
             Toast.makeText(getActivity(),
                     "Primero añade un archivo",
                     Toast.LENGTH_SHORT).show();
             return;
         }else{
-            mListener.agregarNuevaCancion(nombreCancion, nombreArtista, uri);
+            mListener.agregarNuevaCancion(nombreCancion, nombreArtista, uriFoto, uriAudio);
         }
     }
 
@@ -139,7 +139,7 @@ public class AgregarCancion extends Fragment {
         //porque en seleccionar un imagen quiero volver a mi App y
         //quiero conocer que imagen se ha seleccionado, esta info la
         //recibimos en el metodo onActivityResult
-        startActivityForResult(intent, 10);
+        startActivityForResult(intent, 20);
     }
 
 
@@ -172,7 +172,7 @@ public class AgregarCancion extends Fragment {
      */
     public interface NuevaCancion {
         // TODO: Update argument type and name
-        void agregarNuevaCancion(String nombreCancion, String nombreArtista, Uri uri);
+        void agregarNuevaCancion(String nombreCancion, String nombreArtista, Uri uriFoto, Uri uriAudio);
     }
 
     @Override
@@ -184,19 +184,22 @@ public class AgregarCancion extends Fragment {
         if (requestCode == 10 && resultCode == RESULT_OK) {
 
 
-            uri = data.getData();
+            uriAudio = data.getData();
 
             try {
 
                 //Puedo conseguir un bitmap directamente desde una Uri
                 //Para ello utilizo la clase MediaStore.Images
                 bitmap = MediaStore.Images.Media
-                        .getBitmap(getContext().getContentResolver(), uri);
+                        .getBitmap(getContext().getContentResolver(), uriAudio);
 
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+        }else if(requestCode == 20 && resultCode == RESULT_OK){
+            uriFoto = data.getData();
         }
     }
 

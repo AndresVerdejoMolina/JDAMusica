@@ -2,6 +2,7 @@ package com.example.jdamusica;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -157,105 +158,115 @@ public class MainActivity extends AppCompatActivity implements CancionesFragment
 
 
     @Override
-    public void agregarNuevaCancion(final String nombreCancion, final String nombreArtista, final Uri uri) {
-        final UUID uuid = UUID.randomUUID();
-        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+    public void agregarNuevaCancion(final String nombreCancion, final String nombreArtista, final Uri uriFoto, Uri uriAudio) {
+        MiHilo thread = new MiHilo();
+        thread.execute(new Cancion(nombreCancion, nombreArtista, uriFoto.toString(), uriAudio.toString()));
+    }
 
-        if(MainActivity.this.getContentResolver().getType(uri).startsWith("image/")) {
+        class MiHilo extends AsyncTask<Cancion, Void, Void>{
 
-            progressDialog.setTitle("Subiendo foto...");
-            progressDialog.show();
+            @Override
+            protected Void doInBackground(Cancion... cancions) {
+                final UUID uuid = UUID.randomUUID();
+                final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
 
-            final StorageReference ref = mFirebase.getReference().child("imagenes/" + nombreArtista + "-" + nombreCancion + "(" + uuid + ")");
+                MainActivity.this.getContentResolver().getType(Uri.parse(cancions[0].getFoto())).startsWith("images/");
 
-            UploadTask uploadTask;
-            uploadTask = ref.putFile(uri);
+                    progressDialog.setTitle("Subiendo audio...");
+                    progressDialog.show();
 
-            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
+                    final StorageReference ref = mFirebase.getReference().child("audios/" + nombreArtista + "-" + nombreCancion + "(" + uuid + ")");
 
-                    // Continue with the task to get the download URL
-                    return ref.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        progressDialog.dismiss();
-                        Toast.makeText(MainActivity.this,
-                                "Se ha subido la foto en el FireBaseStorage, con el nombre: " + nombreArtista + "-" + nombreCancion + "(" + uuid + ")",
-                                Toast.LENGTH_LONG).show();
-                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                urlDescargaFoto = String.valueOf(uri);
+                    UploadTask uploadTask;
+                    uploadTask = ref.putFile(uri);
+
+                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
                             }
-                        });
 
-                    } else {
-                        // Handle failures
-                        // ...
-                    }
-                }
-            });
+                            // Continue with the task to get the download URL
+                            return ref.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                progressDialog.dismiss();
+                                Toast.makeText(MainActivity.this,
+                                        "Se ha subido el audio en el FireBaseStorage, con el nombre: " + nombreArtista + "-" + nombreCancion + "(" + uuid + ")",
+                                        Toast.LENGTH_LONG).show();
+                                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        urlDescargaCancion = String.valueOf(uri);
+                                    }
+                                });
 
-        }else{
-
-            progressDialog.setTitle("Subiendo audio...");
-            progressDialog.show();
-
-            final StorageReference ref = mFirebase.getReference().child("audios/" + nombreArtista + "-" + nombreCancion + "(" + uuid + ")");
-
-            UploadTask uploadTask;
-            uploadTask = ref.putFile(uri);
-
-            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
-
-                    // Continue with the task to get the download URL
-                    return ref.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        progressDialog.dismiss();
-                        Toast.makeText(MainActivity.this,
-                                "Se ha subido el audio en el FireBaseStorage, con el nombre: " + nombreArtista + "-" + nombreCancion + "(" + uuid + ")",
-                                Toast.LENGTH_LONG).show();
-                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                urlDescargaCancion = String.valueOf(uri);
+                            } else {
+                                // Handle failures
+                                // ...
                             }
-                        });
+                        }
+                    });
+                    Log.i("NuevaCancion", nombreArtista + "-" + nombreCancion + "cancion: " + urlDescargaCancion + "foto: " + urlDescargaFoto);
+                    if(!urlDescargaCancion.isEmpty() && !urlDescargaFoto.isEmpty()) {
+                        database.getReference().push().setValue(new Cancion(nombreCancion, nombreArtista, urlDescargaFoto, urlDescargaCancion));
+                        Toast.makeText(MainActivity.this,
+                                "Nueva canción, " + nombreCancion + " de " + nombreArtista,
+                                Toast.LENGTH_LONG).show();
 
-                    } else {
-                        // Handle failures
-                        // ...
+
+                        urlDescargaFoto = "";
+                        urlDescargaCancion="";
                     }
-                }
-            });
-            Log.i("NuevaCancion", nombreArtista + "-" + nombreCancion + "cancion: " + urlDescargaCancion + "foto: " + urlDescargaFoto);
-            if(!urlDescargaCancion.isEmpty() && !urlDescargaFoto.isEmpty()) {
-                mDatabase.child("canciones").push().setValue(new Cancion(nombreCancion, nombreArtista, urlDescargaFoto, urlDescargaCancion));
-                Toast.makeText(MainActivity.this,
-                        "Nueva canción, " + nombreArtista + " de " + nombreCancion,
-                        Toast.LENGTH_LONG).show();
 
 
-                urlDescargaFoto = "";
-                urlDescargaCancion="";
+                progressDialog.setTitle("Subiendo foto...");
+                progressDialog.show();
+
+                final StorageReference ref = mFirebase.getReference().child("imagenes/" + nombreArtista + "-" + nombreCancion + "(" + uuid + ")");
+
+                UploadTask uploadTask;
+                uploadTask = ref.putFile(uriFoto);
+
+                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+
+                        // Continue with the task to get the download URL
+                        return ref.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            progressDialog.dismiss();
+                            Toast.makeText(MainActivity.this,
+                                    "Se ha subido la foto en el FireBaseStorage, con el nombre: " + nombreArtista + "-" + nombreCancion + "(" + uuid + ")",
+                                    Toast.LENGTH_LONG).show();
+                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    urlDescargaFoto = String.valueOf(uri);
+                                }
+                            });
+
+                        } else {
+                            // Handle failures
+                            // ...
+                        }
+                    }
+                });
+
             }
-        }
+
+            }
 
 
     }
