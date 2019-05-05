@@ -96,17 +96,17 @@ public class AgregarCancion extends Fragment {
         subirFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                subirFotoStorage(nombreArtista.getText().toString().trim(), nombreCancion.getText().toString().trim());
+                subirCancion(nombreArtista.getText().toString().trim(), nombreCancion.getText().toString().trim());
             }
         });
 
         return view;
     }
 
-    private void subirFotoStorage(final String nombreArtista, final String nombreCancion) {
+    private void subirCancion(final String nombreArtista, final String nombreCancion) {
         if(uriAudio == null || uriFoto == null) {
             Toast.makeText(getActivity(),
-                    "Primero añade un archivo",
+                    "Te falta añadir un archivo",
                     Toast.LENGTH_SHORT).show();
             return;
         }else{

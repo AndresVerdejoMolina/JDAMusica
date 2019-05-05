@@ -21,5 +21,11 @@
         android:layout_marginLeft="4dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="4dp"
-        android:text="Para añadir una canción, primero rellena el nombre del artista y de la canción. Después elije un archivo que quieras subir, y le das al boton de 'Subir archivo'. Cuando subas los dos archivos, automáticamente se creará la nueva canción."></TextView>
+        android:text="Para añadir una canción, primero rellena el nombre del artista y de la canción. Después subes el audio y la imagen, y le das al boton de 'CREAR CANCION'."></TextView>
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entendido, no mostrar de nuevo." />
 </LinearLayout>

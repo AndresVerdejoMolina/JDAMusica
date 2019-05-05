@@ -117,6 +117,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="119dp"
         android:layout_marginBottom="22dp"
-        android:text="Subir archivo" />
+        android:text="Crear Canción" />
 
 </RelativeLayout>

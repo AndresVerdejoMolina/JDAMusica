@@ -108,19 +108,25 @@ public class ReproducirFragment extends Fragment {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.zoomin);
+                if(!urlCancion.isEmpty()) {
+                    Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.zoomin);
 
-                foto.startAnimation(animation);
+                    foto.startAnimation(animation);
 
-                Toast.makeText(getActivity(),
-                        "Se está ecuchando " + cancionNombre + " de " + artistaNombre,
-                        Toast.LENGTH_SHORT).show();
-                if(initialStage){
-                    new Player().execute(urlCancion);
-                }else{
-                    if(!mediaPlayer.isPlaying()){
-                        mediaPlayer.start();
+                    Toast.makeText(getActivity(),
+                            "Se está ecuchando " + cancionNombre + " de " + artistaNombre,
+                            Toast.LENGTH_SHORT).show();
+                    if (initialStage) {
+                        new Player().execute(urlCancion);
+                    } else {
+                        if (!mediaPlayer.isPlaying()) {
+                            mediaPlayer.start();
+                        }
                     }
+                }else{
+                    Toast.makeText(getActivity(),
+                            "Esta cancion no tiene audio.",
+                            Toast.LENGTH_SHORT).show();
                 }
 
             }
